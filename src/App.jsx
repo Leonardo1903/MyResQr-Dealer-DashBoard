@@ -12,6 +12,7 @@ import Layout from "./Layout";
 import LoginPage from "./pages/login";
 
 import Dashboard from "./pages/Dashboard";
+import Home from "./pages/Home";
 
 
 function App() {
@@ -19,7 +20,8 @@ function App() {
     createRoutesFromElements(
       <>
         <Route path="/" element={<Layout />}>
-          <Route path="" element={<Dashboard />} />
+          <Route path="" element={<Home />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/new-vehicle" element={<Registration />} />
         </Route>
