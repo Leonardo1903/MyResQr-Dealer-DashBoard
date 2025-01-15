@@ -1,4 +1,4 @@
-import { Button } from "../components/ui/button"
+import { Button } from "../components/ui/button";
 import {
   Table,
   TableBody,
@@ -6,39 +6,42 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../components/ui/table"
-import { Badge } from "../components/ui/badge"
-import { FileText, Download } from 'lucide-react'
+} from "../components/ui/table";
+import { Badge } from "../components/ui/badge";
+import { FileText, Download } from "lucide-react";
 
 const policies = [
   {
-    policyNo: "23099795",
-    chassisNo: "fga48hdd",
+    index: 1,
+    pin: "10000001",
+    salesPerson: "fga48hdd",
     customerName: "RuJuydi",
     saleDate: "11 Dec, 2024",
     startDate: "11 Dec, 2024",
     endDate: "11 Dec, 2025",
-    status: "ACTIVE"
+    status: "ACTIVE",
   },
   {
-    policyNo: "23099416",
-    chassisNo: "ka0edadk",
+    index: 2,
+    pin: "10000002",
+    salesPerson: "ka0edadk",
     customerName: "aJejc",
     saleDate: "09 Dec, 2024",
     startDate: "09 Dec, 2024",
     endDate: "09 Dec, 2025",
-    status: "ACTIVE"
+    status: "ACTIVE",
   },
   {
-    policyNo: "23099226",
-    chassisNo: "84673932-0",
+    index: 3,
+    pin: "10000003",
+    salesPerson: "84673932-0",
     customerName: "kJsh",
     saleDate: "02 Dec, 2024",
     startDate: "02 Dec, 2024",
     endDate: "02 Dec, 2025",
-    status: "ACTIVE"
-  }
-]
+    status: "ACTIVE",
+  },
+];
 
 export function PolicyTable() {
   return (
@@ -46,8 +49,8 @@ export function PolicyTable() {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Policy No</TableHead>
-            <TableHead>Chassis No</TableHead>
+            <TableHead>Pin </TableHead>
+            <TableHead>Sales Person</TableHead>
             <TableHead>Customer Name</TableHead>
             <TableHead>Sale Date</TableHead>
             <TableHead>Start Date</TableHead>
@@ -58,9 +61,9 @@ export function PolicyTable() {
         </TableHeader>
         <TableBody>
           {policies.map((policy) => (
-            <TableRow key={policy.policyNo}>
-              <TableCell>{policy.policyNo}</TableCell>
-              <TableCell>{policy.chassisNo}</TableCell>
+            <TableRow key={policy.index}>
+              <TableCell>{policy.pin}</TableCell>
+              <TableCell>{policy.salesPerson}</TableCell>
               <TableCell>{policy.customerName}</TableCell>
               <TableCell>{policy.saleDate}</TableCell>
               <TableCell>{policy.startDate}</TableCell>
@@ -72,10 +75,18 @@ export function PolicyTable() {
               </TableCell>
               <TableCell>
                 <div className="flex gap-2">
-                  <Button size="icon" variant="outline" className="text-blue-600 hover:text-blue-700">
+                  <Button
+                    size="icon"
+                    variant="outline"
+                    className="text-blue-600 hover:text-blue-700"
+                  >
                     <FileText className="h-4 w-4" />
                   </Button>
-                  <Button size="icon" variant="outline" className="text-blue-600 hover:text-blue-700">
+                  <Button
+                    size="icon"
+                    variant="outline"
+                    className="text-blue-600 hover:text-blue-700"
+                  >
                     <Download className="h-4 w-4" />
                   </Button>
                 </div>
@@ -85,6 +96,5 @@ export function PolicyTable() {
         </TableBody>
       </Table>
     </div>
-  )
+  );
 }
-
