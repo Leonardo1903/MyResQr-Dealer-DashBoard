@@ -8,6 +8,7 @@ import { Toaster } from "./components/ui/toaster";
 import "./App.css";
 import Registration from "./pages/Registration";
 import Layout from "./Layout";
+import LoginPage from "./pages/login";
 
 function App() {
   const router = createBrowserRouter(
@@ -15,7 +16,7 @@ function App() {
       <>
         <Route path="/" element={<Layout />}>
           {/* <Route path="" element={<Home />} /> */}
-          {/* <Route path="/login" element={<Login />} /> */}
+          <Route path="/login" element={<LoginPage />} />
           <Route path="/new-vehicle" element={<Registration />} />
         </Route>
       </>
