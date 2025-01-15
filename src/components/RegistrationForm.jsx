@@ -23,6 +23,7 @@ export default function RegistrationForm({ onSubmit }) {
     defaultValues: {
       salesPersonName: "",
       pin: "",
+      activationCode : "",
       userName: "",
       userMobile: "",
       userEmail: "",
@@ -46,9 +47,9 @@ export default function RegistrationForm({ onSubmit }) {
   };
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
-      <CardHeader>
-        <CardTitle className="text-blue-600">
+    <Card className="w-full max-w-4xl mx-auto shadow-lg my-10">
+      <CardHeader className="">
+        <CardTitle className="text-blue-600 text-center">
           User Registration Form
         </CardTitle>
       </CardHeader>
@@ -78,10 +79,27 @@ export default function RegistrationForm({ onSubmit }) {
                 name="pin"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>PIN # *</FormLabel>
+                    <FormLabel>PIN *</FormLabel>
                     <FormControl>
                       <Input
                         type="password"
+                        {...field}
+                        className="border-blue-200 focus:border-blue-400"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="activationCode"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Activation Code</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="text"
                         {...field}
                         className="border-blue-200 focus:border-blue-400"
                       />
@@ -113,7 +131,7 @@ export default function RegistrationForm({ onSubmit }) {
                 name="userMobile"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>User Mobile # *</FormLabel>
+                    <FormLabel>User Mobile*</FormLabel>
                     <FormControl>
                       <Input
                         type="tel"
