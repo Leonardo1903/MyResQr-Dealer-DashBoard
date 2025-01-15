@@ -9,11 +9,10 @@ import "./App.css";
 import Registration from "./pages/Registration";
 import Layout from "./Layout";
 
-import LoginPage from "./pages/login";
+import LoginPage from "./pages/Login";
 
 import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
-
 
 function App() {
   const router = createBrowserRouter(
