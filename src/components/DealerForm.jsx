@@ -11,6 +11,7 @@ import {
   FormMessage,
 } from "./ui/form";
 import { Input } from "./ui/input";
+import { Select, SelectTrigger, SelectContent, SelectItem } from "./ui/select";
 
 export default function DealerKYCForm({ onSubmit }) {
   const form = useForm({
@@ -24,7 +25,8 @@ export default function DealerKYCForm({ onSubmit }) {
       ownerName: "",
       ownerMobile: "",
       ownerEmail: "",
-      dealerSPOC: "",
+      dealerSPOCName: "",
+      dealerSPOCNumber: "",
       numberOfShowrooms: "",
       shipping: "",
       showrooms: [{ address: "", managerName: "", managerNumber: "" }],
@@ -43,7 +45,11 @@ export default function DealerKYCForm({ onSubmit }) {
     name: "directors",
   });
 
-  const { fields: showroomFields, append: appendShowroom, remove: removeShowroom } = useFieldArray({
+  const {
+    fields: showroomFields,
+    append: appendShowroom,
+    remove: removeShowroom,
+  } = useFieldArray({
     control: form.control,
     name: "showrooms",
   });
@@ -63,10 +69,39 @@ export default function DealerKYCForm({ onSubmit }) {
         removeShowroom(i - 1);
       }
     }
-  }, [numberOfShowrooms, showroomFields.length, appendShowroom, removeShowroom]);
+  }, [
+    numberOfShowrooms,
+    showroomFields.length,
+    appendShowroom,
+    removeShowroom,
+  ]);
 
   const handleSubmit = (data) => {
-    onSubmit(data);
+    const formattedData = {
+      dealership_name: data.dealershipName,
+      dealer_address: data.dealerAddress,
+      billing_address: data.billingAddress,
+      gstin: data.gstin,
+      cin: data.cin,
+      directors: data.directors,
+      owner_name: data.ownerName,
+      owner_mobile: data.ownerMobile,
+      owner_email: data.ownerEmail,
+      dealer_spoc_name: data.dealerSPOCName,
+      dealer_spoc_number: data.dealerSPOCNumber,
+      number_of_showrooms: data.numberOfShowrooms,
+      shipping: data.shipping,
+      showrooms: data.showrooms,
+      bank_details: {
+        bank_name: data.bankDetails.bankName,
+        branch_name: data.bankDetails.branchAddress,
+        ifsc_code: data.bankDetails.ifscCode,
+        account_number: data.bankDetails.accountNumber,
+        account_name: data.bankDetails.accountName,
+      },
+    };
+
+    onSubmit(formattedData);
     form.reset();
   };
 
@@ -79,7 +114,10 @@ export default function DealerKYCForm({ onSubmit }) {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-6"
+          >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormField
                 control={form.control}
@@ -88,7 +126,10 @@ export default function DealerKYCForm({ onSubmit }) {
                   <FormItem>
                     <FormLabel>Dealership Name *</FormLabel>
                     <FormControl>
-                      <Input {...field} className="border-blue-200 focus:border-blue-400" />
+                      <Input
+                        {...field}
+                        className="border-blue-200 focus:border-blue-400"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -102,7 +143,10 @@ export default function DealerKYCForm({ onSubmit }) {
                   <FormItem>
                     <FormLabel>Dealer Address *</FormLabel>
                     <FormControl>
-                      <Input {...field} className="border-blue-200 focus:border-blue-400" />
+                      <Input
+                        {...field}
+                        className="border-blue-200 focus:border-blue-400"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -116,7 +160,10 @@ export default function DealerKYCForm({ onSubmit }) {
                   <FormItem>
                     <FormLabel>Billing Address *</FormLabel>
                     <FormControl>
-                      <Input {...field} className="border-blue-200 focus:border-blue-400" />
+                      <Input
+                        {...field}
+                        className="border-blue-200 focus:border-blue-400"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -130,7 +177,10 @@ export default function DealerKYCForm({ onSubmit }) {
                   <FormItem>
                     <FormLabel>GSTIN *</FormLabel>
                     <FormControl>
-                      <Input {...field} className="border-blue-200 focus:border-blue-400" />
+                      <Input
+                        {...field}
+                        className="border-blue-200 focus:border-blue-400"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -144,7 +194,10 @@ export default function DealerKYCForm({ onSubmit }) {
                   <FormItem>
                     <FormLabel>CIN (in case of LLP/ Pvt Ltd/ Ltd) *</FormLabel>
                     <FormControl>
-                      <Input {...field} className="border-blue-200 focus:border-blue-400" />
+                      <Input
+                        {...field}
+                        className="border-blue-200 focus:border-blue-400"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -154,7 +207,10 @@ export default function DealerKYCForm({ onSubmit }) {
               <div className="col-span-2">
                 <h3 className="text-lg font-medium text-gray-900">Directors</h3>
                 {directorFields.map((item, index) => (
-                  <div key={item.id} className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+                  <div
+                    key={item.id}
+                    className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4"
+                  >
                     <FormField
                       control={form.control}
                       name={`directors.${index}.name`}
@@ -162,7 +218,10 @@ export default function DealerKYCForm({ onSubmit }) {
                         <FormItem>
                           <FormLabel>Director Name *</FormLabel>
                           <FormControl>
-                            <Input {...field} className="border-blue-200 focus:border-blue-400" />
+                            <Input
+                              {...field}
+                              className="border-blue-200 focus:border-blue-400"
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -175,7 +234,10 @@ export default function DealerKYCForm({ onSubmit }) {
                         <FormItem>
                           <FormLabel>Director Number *</FormLabel>
                           <FormControl>
-                            <Input {...field} className="border-blue-200 focus:border-blue-400" />
+                            <Input
+                              {...field}
+                              className="border-blue-200 focus:border-blue-400"
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -188,7 +250,10 @@ export default function DealerKYCForm({ onSubmit }) {
                         <FormItem>
                           <FormLabel>Director Email *</FormLabel>
                           <FormControl>
-                            <Input {...field} className="border-blue-200 focus:border-blue-400" />
+                            <Input
+                              {...field}
+                              className="border-blue-200 focus:border-blue-400"
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -196,7 +261,13 @@ export default function DealerKYCForm({ onSubmit }) {
                     />
                   </div>
                 ))}
-                <Button type="button" onClick={() => appendDirector({ name: "", number: "", email: "" })} className="mt-4">
+                <Button
+                  type="button"
+                  onClick={() =>
+                    appendDirector({ name: "", number: "", email: "" })
+                  }
+                  className="mt-4"
+                >
                   Add Director
                 </Button>
               </div>
@@ -208,7 +279,10 @@ export default function DealerKYCForm({ onSubmit }) {
                   <FormItem>
                     <FormLabel>Owner/ MD/ CEO Name *</FormLabel>
                     <FormControl>
-                      <Input {...field} className="border-blue-200 focus:border-blue-400" />
+                      <Input
+                        {...field}
+                        className="border-blue-200 focus:border-blue-400"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -222,7 +296,10 @@ export default function DealerKYCForm({ onSubmit }) {
                   <FormItem>
                     <FormLabel>Owner/ MD/ CEO Mobile Number *</FormLabel>
                     <FormControl>
-                      <Input {...field} className="border-blue-200 focus:border-blue-400" />
+                      <Input
+                        {...field}
+                        className="border-blue-200 focus:border-blue-400"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -236,7 +313,10 @@ export default function DealerKYCForm({ onSubmit }) {
                   <FormItem>
                     <FormLabel>Owner/ MD/ CEO Email *</FormLabel>
                     <FormControl>
-                      <Input {...field} className="border-blue-200 focus:border-blue-400" />
+                      <Input
+                        {...field}
+                        className="border-blue-200 focus:border-blue-400"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -245,12 +325,32 @@ export default function DealerKYCForm({ onSubmit }) {
 
               <FormField
                 control={form.control}
-                name="dealerSPOC"
+                name="dealerSPOCName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Dealer SPOC Name & Number *</FormLabel>
+                    <FormLabel>Dealer SPOC Name *</FormLabel>
                     <FormControl>
-                      <Input {...field} className="border-blue-200 focus:border-blue-400" />
+                      <Input
+                        {...field}
+                        className="border-blue-200 focus:border-blue-400"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="dealerSPOCNumber"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Dealer SPOC Number *</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        className="border-blue-200 focus:border-blue-400"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -264,7 +364,10 @@ export default function DealerKYCForm({ onSubmit }) {
                   <FormItem>
                     <FormLabel>Number of Showrooms *</FormLabel>
                     <FormControl>
-                      <Input {...field} className="border-blue-200 focus:border-blue-400" />
+                      <Input
+                        {...field}
+                        className="border-blue-200 focus:border-blue-400"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -278,7 +381,16 @@ export default function DealerKYCForm({ onSubmit }) {
                   <FormItem>
                     <FormLabel>Shipping (central/ showroom) *</FormLabel>
                     <FormControl>
-                      <Input {...field} className="border-blue-200 focus:border-blue-400" />
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
+                        <SelectTrigger className="border-blue-200 focus:border-blue-400" />
+                        <SelectContent>
+                          <SelectItem value="central">Central</SelectItem>
+                          <SelectItem value="showroom">Showroom</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -288,7 +400,10 @@ export default function DealerKYCForm({ onSubmit }) {
               <div className="col-span-2">
                 <h3 className="text-lg font-medium text-gray-900">Showrooms</h3>
                 {showroomFields.map((item, index) => (
-                  <div key={item.id} className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+                  <div
+                    key={item.id}
+                    className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4"
+                  >
                     <FormField
                       control={form.control}
                       name={`showrooms.${index}.address`}
@@ -296,7 +411,10 @@ export default function DealerKYCForm({ onSubmit }) {
                         <FormItem>
                           <FormLabel>Showroom Address *</FormLabel>
                           <FormControl>
-                            <Input {...field} className="border-blue-200 focus:border-blue-400" />
+                            <Input
+                              {...field}
+                              className="border-blue-200 focus:border-blue-400"
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -309,7 +427,10 @@ export default function DealerKYCForm({ onSubmit }) {
                         <FormItem>
                           <FormLabel>Showroom Manager Name *</FormLabel>
                           <FormControl>
-                            <Input {...field} className="border-blue-200 focus:border-blue-400" />
+                            <Input
+                              {...field}
+                              className="border-blue-200 focus:border-blue-400"
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -322,7 +443,10 @@ export default function DealerKYCForm({ onSubmit }) {
                         <FormItem>
                           <FormLabel>Showroom Manager Number *</FormLabel>
                           <FormControl>
-                            <Input {...field} className="border-blue-200 focus:border-blue-400" />
+                            <Input
+                              {...field}
+                              className="border-blue-200 focus:border-blue-400"
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -333,7 +457,9 @@ export default function DealerKYCForm({ onSubmit }) {
               </div>
 
               <div className="col-span-2">
-                <h3 className="text-lg font-medium text-gray-900">Bank Details</h3>
+                <h3 className="text-lg font-medium text-gray-900">
+                  Bank Details
+                </h3>
                 <FormField
                   control={form.control}
                   name="bankDetails.bankName"
@@ -341,7 +467,10 @@ export default function DealerKYCForm({ onSubmit }) {
                     <FormItem>
                       <FormLabel>Bank Name *</FormLabel>
                       <FormControl>
-                        <Input {...field} className="border-blue-200 focus:border-blue-400" />
+                        <Input
+                          {...field}
+                          className="border-blue-200 focus:border-blue-400"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -354,7 +483,10 @@ export default function DealerKYCForm({ onSubmit }) {
                     <FormItem>
                       <FormLabel>Branch Name & Address *</FormLabel>
                       <FormControl>
-                        <Input {...field} className="border-blue-200 focus:border-blue-400" />
+                        <Input
+                          {...field}
+                          className="border-blue-200 focus:border-blue-400"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -367,7 +499,10 @@ export default function DealerKYCForm({ onSubmit }) {
                     <FormItem>
                       <FormLabel>IFSC Code *</FormLabel>
                       <FormControl>
-                        <Input {...field} className="border-blue-200 focus:border-blue-400" />
+                        <Input
+                          {...field}
+                          className="border-blue-200 focus:border-blue-400"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -380,7 +515,10 @@ export default function DealerKYCForm({ onSubmit }) {
                     <FormItem>
                       <FormLabel>Account Number *</FormLabel>
                       <FormControl>
-                        <Input {...field} className="border-blue-200 focus:border-blue-400" />
+                        <Input
+                          {...field}
+                          className="border-blue-200 focus:border-blue-400"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -393,7 +531,10 @@ export default function DealerKYCForm({ onSubmit }) {
                     <FormItem>
                       <FormLabel>Account Name *</FormLabel>
                       <FormControl>
-                        <Input {...field} className="border-blue-200 focus:border-blue-400" />
+                        <Input
+                          {...field}
+                          className="border-blue-200 focus:border-blue-400"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -402,7 +543,10 @@ export default function DealerKYCForm({ onSubmit }) {
               </div>
             </div>
 
-            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 mt-6">
+            <Button
+              type="submit"
+              className="w-full bg-blue-600 hover:bg-blue-700 mt-6"
+            >
               Submit
             </Button>
           </form>
