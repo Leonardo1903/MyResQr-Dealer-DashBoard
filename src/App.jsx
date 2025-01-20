@@ -14,6 +14,7 @@ import LoginPage from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
 import DealerKYC from "./pages/DealerKYC";
+import { RecoilRoot } from "recoil";
 
 function App() {
   const router = createBrowserRouter(
@@ -32,12 +33,12 @@ function App() {
 
   return (
     <div className="max-w-screen">
-      {/* <RecoilRoot> */}
+      <RecoilRoot>
       {/* <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme"> */}
       <RouterProvider router={router} />
       <Toaster />
       {/* </ThemeProvider> */}
-      {/* </RecoilRoot> */}
+      </RecoilRoot>
     </div>
   );
 }
