@@ -17,39 +17,72 @@ import {
   SelectValue,
 } from "./ui/select";
 import { Input } from "./ui/input";
+import { useRecoilValue } from "recoil";
+import { accessTokenAtom } from "../store/UserAtoms";
+import { useToast } from "../hooks/use-toast";
+import axios from "axios";
 
 export default function RegistrationForm({ onSubmit }) {
+  const accessToken = useRecoilValue(accessTokenAtom);
+  const baseUrl = import.meta.env.VITE_BASE_URL;
+  const { toast } = useToast();
   const form = useForm({
     defaultValues: {
-      salesPersonName: "",
-      pin: "",
-      activationCode : "",
-      userName: "",
-      userMobile: "",
-      userEmail: "",
-      userDOB: "",
-      userGender: "",
-      userPhoto: "",
-      aadhaarFront: "",
-      aadhaarBack: "",
-      emergencyContact1: "",
-      emergencyContact2: "",
-      emergencyContact3: "",
-      emergencyContact4: "",
-      emergencyContact5: "",
-      emergencyContact6: "",
+      affilatedTo: "",
+      phone_number: "",
+      createdBy: "",
+      fullname: "",
+      email_id: "",
+      dob: "",
+      gender: "",
+      family_phone1: "",
+      family_phone2: "",
+      friend_phone1: "",
+      friend_phone2: "",
+      image: "",
     },
   });
 
-  const handleSubmit = (data) => {
-    onSubmit(data);
-    form.reset();
+  const handleSubmit = async (data) => {
+    try {
+      const formData = new FormData();
+      Object.keys(data).forEach((key) => {
+        formData.append(key, data[key]);
+      });
+      const response = await axios.post(
+        `${baseUrl}/dealer/create-user/`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      toast({
+        title: "Registration Successful",
+        description: response.message,
+        variant: "default",
+      });
+
+      onSubmit(response.data);
+      form.reset();
+    } catch (error) {
+      console.error(error);
+      const errorMessage = error.response?.data?.detail || error.response?.data.error;
+      toast({
+        title: "Registration Failed",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    }
   };
 
   return (
     <Card className="w-full max-w-4xl mx-auto shadow-lg my-10">
-      <CardHeader className="">
-        <CardTitle className="text-blue-600 text-center">
+      <CardHeader>
+        <CardTitle className="text-blue-600 text-center text-xl">
           User Registration Form
         </CardTitle>
       </CardHeader>
@@ -57,15 +90,17 @@ export default function RegistrationForm({ onSubmit }) {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/** Affiliated To */}
               <FormField
                 control={form.control}
-                name="salesPersonName"
+                name="affilatedTo"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Sales Person Name *</FormLabel>
+                    <FormLabel>Affiliated To</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
+                        placeholder="Enter affiliation"
                         className="border-blue-200 focus:border-blue-400"
                       />
                     </FormControl>
@@ -74,68 +109,18 @@ export default function RegistrationForm({ onSubmit }) {
                 )}
               />
 
+              {/** Phone Number */}
               <FormField
                 control={form.control}
-                name="pin"
+                name="phone_number"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>PIN *</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="password"
-                        {...field}
-                        className="border-blue-200 focus:border-blue-400"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="activationCode"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Activation Code</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="text"
-                        {...field}
-                        className="border-blue-200 focus:border-blue-400"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="userName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>User Name *</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        className="border-blue-200 focus:border-blue-400"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="userMobile"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>User Mobile*</FormLabel>
+                    <FormLabel>Phone Number</FormLabel>
                     <FormControl>
                       <Input
                         type="tel"
                         {...field}
+                        placeholder="Enter phone number"
                         className="border-blue-200 focus:border-blue-400"
                       />
                     </FormControl>
@@ -144,16 +129,57 @@ export default function RegistrationForm({ onSubmit }) {
                 )}
               />
 
+              {/** Created By */}
               <FormField
                 control={form.control}
-                name="userEmail"
+                name="createdBy"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>User Email (optional)</FormLabel>
+                    <FormLabel>Created By</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="text"
+                        {...field}
+                        placeholder="Creator name"
+                        className="border-blue-200 focus:border-blue-400"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/** Full Name */}
+              <FormField
+                control={form.control}
+                name="fullname"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Full Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="Enter full name"
+                        className="border-blue-200 focus:border-blue-400"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/** Email ID */}
+              <FormField
+                control={form.control}
+                name="email_id"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email ID</FormLabel>
                     <FormControl>
                       <Input
                         type="email"
                         {...field}
+                        placeholder="Enter email ID"
                         className="border-blue-200 focus:border-blue-400"
                       />
                     </FormControl>
@@ -162,12 +188,13 @@ export default function RegistrationForm({ onSubmit }) {
                 )}
               />
 
+              {/** Date of Birth */}
               <FormField
                 control={form.control}
-                name="userDOB"
+                name="dob"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>User DOB *</FormLabel>
+                    <FormLabel>Date of Birth</FormLabel>
                     <FormControl>
                       <Input
                         type="date"
@@ -180,12 +207,13 @@ export default function RegistrationForm({ onSubmit }) {
                 )}
               />
 
+              {/** Gender */}
               <FormField
                 control={form.control}
-                name="userGender"
+                name="gender"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>User Gender *</FormLabel>
+                    <FormLabel>Gender</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
@@ -206,50 +234,13 @@ export default function RegistrationForm({ onSubmit }) {
                 )}
               />
 
+              {/** Image */}
               <FormField
                 control={form.control}
-                name="userPhoto"
+                name="image"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>User Photo *</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="file"
-                        accept="image/*"
-                        {...field}
-                        className="border-blue-200 focus:border-blue-400"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="aadhaarFront"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>User Aadhaar Front *</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="file"
-                        accept="image/*"
-                        {...field}
-                        className="border-blue-200 focus:border-blue-400"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="aadhaarBack"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>User Aadhaar Back *</FormLabel>
+                    <FormLabel>Profile Photo</FormLabel>
                     <FormControl>
                       <Input
                         type="file"
@@ -264,112 +255,36 @@ export default function RegistrationForm({ onSubmit }) {
               />
             </div>
 
+            {/** Emergency Contacts */}
             <div className="mt-6">
               <h3 className="text-lg font-medium text-gray-900">
-                User Emergency Contacts
+                Emergency Contacts
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                <FormField
-                  control={form.control}
-                  name="emergencyContact1"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Emergency Contact 1 *</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          className="border-blue-200 focus:border-blue-400"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="emergencyContact2"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Emergency Contact 2 *</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          className="border-blue-200 focus:border-blue-400"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="emergencyContact3"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Emergency Contact 3 *</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          className="border-blue-200 focus:border-blue-400"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="emergencyContact4"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Emergency Contact 4 *</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          className="border-blue-200 focus:border-blue-400"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="emergencyContact5"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Emergency Contact 5 (optional)</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          className="border-blue-200 focus:border-blue-400"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="emergencyContact6"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Emergency Contact 6 (optional)</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          className="border-blue-200 focus:border-blue-400"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                {["family_phone1", "family_phone2", "friend_phone1", "friend_phone2"].map(
+                  (key, index) => (
+                    <FormField
+                      key={key}
+                      control={form.control}
+                      name={key}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>
+                            {`Emergency Contact ${index + 1}`}
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              placeholder={`Enter contact ${index + 1}`}
+                              className="border-blue-200 focus:border-blue-400"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )
+                )}
               </div>
             </div>
 
