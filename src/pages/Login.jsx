@@ -1,42 +1,42 @@
-import { useState } from 'react'
-import PhoneNumberInput from '../components/PhoneNumberInput'
-import OTPValidation from '../components/OTPValidation'
-import { toast } from '../hooks/use-toast'
+import LoginForm from "../components/LoginForm";
+import { toast } from "../hooks/use-toast";
+import axios from "axios";
+import { accessTokenAtom } from "../store/UserAtoms";
+import { useSetRecoilState } from "recoil";
 
 export default function LoginPage() {
-  const [step, setStep] = useState('phone')
-  const [phoneNumber, setPhoneNumber] = useState('')
+  const baseUrl = import.meta.env.VITE_BASE_URL;
 
-  const handlePhoneSubmit = (phone) => {
-    setPhoneNumber(phone)
-    setStep('otp')
-    toast({
-      title: 'OTP Sent',
-      description: 'OTP has been sent to your phone',
-      variant: 'default',
-    })
-    // Here you would typically call your API to generate and send the OTP
-  }
+  const setAccessToken = useSetRecoilState(accessTokenAtom);
 
-  const handleOTPSubmit = (otp) => {
-    console.log('OTP submitted:', otp)
-    toast({
-      title: 'OTP Validated',
-      description: 'OTP has been validated successfully',
-      variant: 'default',
-    })
-    // Here you would typically validate the OTP with your backend
-  }
+  const handleLoginSubmit = async ({ email, password }) => {
+    try {
+      const response = await axios.post(`${baseUrl}/dealer/login/`, {
+        email,
+        password,
+      });
+      // console.log(response.data);
+      setAccessToken(response.data.accessToken);
+      toast({
+        title: "Login Successful",
+        description: "You have logged in successfully",
+        variant: "default",
+      });
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Login Failed",
+        description: "Login failed. Please try again",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="w-full max-w-md">
-        {step === 'phone' ? (
-          <PhoneNumberInput onSubmit={handlePhoneSubmit} />
-        ) : (
-          <OTPValidation phoneNumber={phoneNumber} onSubmit={handleOTPSubmit} />
-        )}
+        <LoginForm onSubmit={handleLoginSubmit} />
       </div>
     </div>
-  )
+  );
 }

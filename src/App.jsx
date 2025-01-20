@@ -13,6 +13,7 @@ import LoginPage from "./pages/Login";
 
 import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
+import DealerKYC from "./pages/DealerKYC";
 
 function App() {
   const router = createBrowserRouter(
@@ -23,6 +24,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/new-vehicle" element={<Registration />} />
+          <Route path="/dealer-kyc" element={<DealerKYC />} />
         </Route>
       </>
     )
