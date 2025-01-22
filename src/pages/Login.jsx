@@ -1,13 +1,14 @@
 import LoginForm from "../components/LoginForm";
 import { toast } from "../hooks/use-toast";
 import axios from "axios";
-import { accessTokenAtom } from "../store/UserAtoms";
+import { accessTokenAtom, Dealer_nameAtom } from "../store/UserAtoms";
 import { useSetRecoilState } from "recoil";
 
 export default function LoginPage() {
   const baseUrl = import.meta.env.VITE_BASE_URL;
 
   const setAccessToken = useSetRecoilState(accessTokenAtom);
+  const setDealerName = useSetRecoilState(Dealer_nameAtom);
 
   const handleLoginSubmit = async ({ email, password }) => {
     try {
@@ -17,6 +18,7 @@ export default function LoginPage() {
       });
       // console.log(response.data);
       setAccessToken(response.data.accessToken);
+      setDealerName(response.data.Dealer_name);
       toast({
         title: "Login Successful",
         description: "You have logged in successfully",

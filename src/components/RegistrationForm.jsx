@@ -18,17 +18,18 @@ import {
 } from "./ui/select";
 import { Input } from "./ui/input";
 import { useRecoilValue } from "recoil";
-import { accessTokenAtom } from "../store/UserAtoms";
+import { accessTokenAtom, Dealer_nameAtom } from "../store/UserAtoms";
 import { useToast } from "../hooks/use-toast";
 import axios from "axios";
 
 export default function RegistrationForm({ onSubmit }) {
   const accessToken = useRecoilValue(accessTokenAtom);
+  const dealerName = useRecoilValue(Dealer_nameAtom);
   const baseUrl = import.meta.env.VITE_BASE_URL;
   const { toast } = useToast();
   const form = useForm({
     defaultValues: {
-      affilatedTo: "",
+      affilatedTo: dealerName,
       phone_number: "",
       createdBy: "",
       fullname: "",
@@ -40,6 +41,7 @@ export default function RegistrationForm({ onSubmit }) {
       friend_phone1: "",
       friend_phone2: "",
       image: "",
+      PIN: "",
     },
   });
 
@@ -66,6 +68,26 @@ export default function RegistrationForm({ onSubmit }) {
         variant: "default",
       });
 
+      // PIN Activation
+      try {
+        const response = await axios.post(`${baseUrl}/dealer/request-activation/`) //AUth header may have to be added...
+
+        toast({
+          title: "PIN Activation",
+          description: response.message,
+          variant: "default",
+        })
+
+      } catch (error) {
+        console.error(error);
+        const errorMessage = error.response?.data?.detail || error.response?.data.error;
+        toast({
+          title: "Registration Failed",
+          description: errorMessage,
+          variant: "destructive",
+        });
+      }
+
       onSubmit(response.data);
       form.reset();
     } catch (error) {
@@ -90,17 +112,17 @@ export default function RegistrationForm({ onSubmit }) {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/** Affiliated To */}
+              {/** PIN */}
               <FormField
                 control={form.control}
-                name="affilatedTo"
+                name="PIN"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Affiliated To</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
-                        placeholder="Enter affiliation"
+                        placeholder="Enter PIN"
                         className="border-blue-200 focus:border-blue-400"
                       />
                     </FormControl>
