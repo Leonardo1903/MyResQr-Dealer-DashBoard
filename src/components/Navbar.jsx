@@ -25,13 +25,13 @@ export function Navbar() {
         </div>
         <div className="hidden md:flex gap-2">
           <Button variant="ghost" asChild>
-            <Link to="">Dashboard</Link>
+            <Link to="/dashboard">Dashboard</Link>
           </Button>
           <Button variant="ghost" asChild>
             <Link to="/new-vehicle">New Policy</Link>
           </Button>
           <Button variant="ghost" asChild>
-            <Link to="/dashboard">View Policy</Link>
+            <Link to="/view-policy">View Policy</Link>
           </Button>
           <Button variant="ghost" asChild>
             Logout

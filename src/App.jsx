@@ -15,16 +15,17 @@ import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
 import DealerKYC from "./pages/DealerKYC";
 import { RecoilRoot } from "recoil";
+import RegistrationForm from "./components/RegistrationForm";
 
 function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
         <Route path="/" element={<Layout />}>
-          <Route path="" element={<Home />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/new-vehicle" element={<Registration />} />
+          <Route path="" element={<LoginPage />} />
+          <Route path="/view-policy" element={<Dashboard />} />
+          <Route path="/dashboard" element={<Home />} />
+          <Route path="/new-vehicle" element={<RegistrationForm />} />
           <Route path="/dealer-kyc" element={<DealerKYC />} />
         </Route>
       </>

@@ -7,11 +7,7 @@ export default function Registration() {
   const { toast } = useToast();
 
   const handleSubmit = (values) => {
-    toast({
-      title: "Form Submitted",
-      description: "Form submitted successfully",
-      variantL: "default",
-    });
+    
     console.log(values);
   };
 
