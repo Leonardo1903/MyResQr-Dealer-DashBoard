@@ -18,17 +18,20 @@ import {
 } from "./ui/select";
 import { Input } from "./ui/input";
 import { useRecoilValue } from "recoil";
-import { accessTokenAtom } from "../store/UserAtoms";
+import { accessTokenAtom, Dealer_nameAtom } from "../store/UserAtoms";
 import { useToast } from "../hooks/use-toast";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function RegistrationForm({ onSubmit }) {
-  const accessToken = useRecoilValue(accessTokenAtom);
-  const baseUrl = import.meta.env.VITE_BASE_URL;
+  const accessToken = sessionStorage.getItem("accessToken");
+  const dealerName = useRecoilValue(Dealer_nameAtom);
+  const navigate = useNavigate();
+  const baseUrl = "http://3.108.8.215/api/v1";
   const { toast } = useToast();
   const form = useForm({
     defaultValues: {
-      affilatedTo: "",
+      affilatedTo: dealerName,
       phone_number: "",
       createdBy: "",
       fullname: "",
@@ -40,6 +43,8 @@ export default function RegistrationForm({ onSubmit }) {
       friend_phone1: "",
       friend_phone2: "",
       image: "",
+      PIN: "",
+      key: "",
     },
   });
 
@@ -66,8 +71,35 @@ export default function RegistrationForm({ onSubmit }) {
         variant: "default",
       });
 
-      onSubmit(response.data);
-      form.reset();
+      // PIN Activation
+      try {
+        const activationResponse = await axios.post(`${baseUrl}/dealer/request-activation/`, {
+          pin: data.PIN,
+          key: data.key,
+          profile_id: response.data.profile_id,
+          activated_by: data.createdBy,
+          dealer: dealerName
+        });
+  
+        toast({
+          title: "PIN Activation request sent",
+          description: activationResponse.data.message,
+          variant: "default",
+        });
+
+        navigate("/dashboard");
+  
+      } catch (activationError) {
+        console.error(activationError);
+        const errorMessage = activationError.response?.data?.detail || activationError.response?.data.error;
+        toast({
+          title: "PIN Activation request Failed",
+          description: errorMessage,
+          variant: "destructive",
+        });
+      }
+
+      // form.reset();
     } catch (error) {
       console.error(error);
       const errorMessage = error.response?.data?.detail || error.response?.data.error;
@@ -90,17 +122,35 @@ export default function RegistrationForm({ onSubmit }) {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/** Affiliated To */}
+              {/** PIN */}
               <FormField
                 control={form.control}
-                name="affilatedTo"
+                name="PIN"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Affiliated To</FormLabel>
+                    <FormLabel>Enter PIN Number</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
-                        placeholder="Enter affiliation"
+                        placeholder="Enter PIN"
+                        className="border-blue-200 focus:border-blue-400"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {/** PIN */}
+              <FormField
+                control={form.control}
+                name="key"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Enter Activation Code</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="Enter Activation Code"
                         className="border-blue-200 focus:border-blue-400"
                       />
                     </FormControl>
@@ -135,12 +185,12 @@ export default function RegistrationForm({ onSubmit }) {
                 name="createdBy"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Created By</FormLabel>
+                    <FormLabel>Sales Person Name</FormLabel>
                     <FormControl>
                       <Input
                         type="text"
                         {...field}
-                        placeholder="Creator name"
+                        placeholder="Sales Person name"
                         className="border-blue-200 focus:border-blue-400"
                       />
                     </FormControl>
@@ -174,7 +224,7 @@ export default function RegistrationForm({ onSubmit }) {
                 name="email_id"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email ID</FormLabel>
+                    <FormLabel>Email ID (Optional)</FormLabel>
                     <FormControl>
                       <Input
                         type="email"
@@ -224,9 +274,9 @@ export default function RegistrationForm({ onSubmit }) {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="male">Male</SelectItem>
-                        <SelectItem value="female">Female</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
+                        <SelectItem value="Male">Male</SelectItem>
+                        <SelectItem value="Female">Female</SelectItem>
+                        <SelectItem value="Other">Other</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />

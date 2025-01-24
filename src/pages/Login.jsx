@@ -1,13 +1,16 @@
 import LoginForm from "../components/LoginForm";
 import { toast } from "../hooks/use-toast";
 import axios from "axios";
-import { accessTokenAtom } from "../store/UserAtoms";
+import { accessTokenAtom, Dealer_nameAtom } from "../store/UserAtoms";
 import { useSetRecoilState } from "recoil";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
-  const baseUrl = import.meta.env.VITE_BASE_URL;
+  const baseUrl = "http://3.108.8.215/api/v1";
 
   const setAccessToken = useSetRecoilState(accessTokenAtom);
+  const setDealerName = useSetRecoilState(Dealer_nameAtom);
+  const navigate = useNavigate();
 
   const handleLoginSubmit = async ({ email, password }) => {
     try {
@@ -16,12 +19,15 @@ export default function LoginPage() {
         password,
       });
       // console.log(response.data);
-      setAccessToken(response.data.accessToken);
+      // setAccessToken(response.data.accessToken);
+      sessionStorage.setItem("accessToken", response.data.accessToken);
+      setDealerName(response.data.Dealer_name);
       toast({
         title: "Login Successful",
         description: "You have logged in successfully",
         variant: "default",
       });
+      navigate("/dashboard");
     } catch (error) {
       console.error(error);
       toast({
