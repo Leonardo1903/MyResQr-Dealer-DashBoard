@@ -49,6 +49,7 @@ export default function RegistrationForm({ onSubmit }) {
   });
 
   const handleSubmit = async (data) => {
+    // console.log("Access Token:", accessToken);
     try {
       const formData = new FormData();
       Object.keys(data).forEach((key) => {
@@ -64,45 +65,66 @@ export default function RegistrationForm({ onSubmit }) {
           },
         }
       );
-
+      
+      console.log("Registration Response:", response.data.message);
+      
       toast({
         title: "Registration Successful",
-        description: response.message,
+        description: response.data.message,
         variant: "default",
       });
 
+      if (response.data.message === "User already exists.") {
+        toast({
+          title: "Registration Failed",
+          description: response.data.message,
+          variant: "destructive",
+        })
+        return;
+      }
+  
       // PIN Activation
+      console.log("Response Data : ",response.data);
       try {
-        const activationResponse = await axios.post(`${baseUrl}/dealer/request-activation/`, {
-          pin: data.PIN,
-          key: data.key,
-          profile_id: response.data.profile_id,
-          activated_by: data.createdBy,
-          dealer: dealerName
-        });
+        const activationResponse = await axios.post(
+          `${baseUrl}/dealer/request-activation/`,
+          {
+            pin: data.PIN,
+            key: data.key,
+            profile_id: response.data.profile.id,
+            activated_by: data.createdBy,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
   
         toast({
           title: "PIN Activation request sent",
           description: activationResponse.data.message,
           variant: "default",
         });
-
-        navigate("/dashboard");
   
+        navigate("/dashboard");
       } catch (activationError) {
-        console.error(activationError);
-        const errorMessage = activationError.response?.data?.detail || activationError.response?.data.error;
+        console.error("Activation Error:", activationError);
+        const errorMessage =
+          activationError.response?.data?.detail ||
+          activationError.response?.data.error;
         toast({
           title: "PIN Activation request Failed",
           description: errorMessage,
           variant: "destructive",
         });
       }
-
-      // form.reset();
+  
+      form.reset();
     } catch (error) {
-      console.error(error);
-      const errorMessage = error.response?.data?.detail || error.response?.data.error;
+      console.error("Registration Error:", error);
+      const errorMessage =
+        error.response?.data?.detail || error.response?.data.error;
       toast({
         title: "Registration Failed",
         description: errorMessage,

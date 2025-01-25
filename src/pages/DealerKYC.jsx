@@ -1,12 +1,14 @@
 import { useToast } from "../hooks/use-toast";
 import DealerForm from "../components/DealerForm";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function DealerKYC() {
-  const baseUrl = import.meta.env.VITE_BASE_URL;
+  const baseUrl = "http://3.108.8.215/api/v1";
   const { toast } = useToast();
-
+  const navigate = useNavigate();
   const handleSubmit = async (values) => {
+  
     try {
       const response = await axios.post(
         `${baseUrl}/dealer/submit-request/`,
@@ -14,17 +16,20 @@ export default function DealerKYC() {
       );
       toast({
         title: "Form Submitted",
-        description: "Form submitted successfully",
+        description: response.data.message,
         variant: "default",
       });
+      navigate("/dashboard");
       console.log(response.data);
     } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || error.response?.data?.detail || error.message;
       toast({
         title: "Submission Failed",
-        description: "There was an error submitting the form",
+        description: errorMessage,
         variant: "destructive",
       });
-      console.error(error);
+      console.error("Submission Error:", errorMessage);
     }
   };
 
