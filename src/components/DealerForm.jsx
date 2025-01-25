@@ -12,8 +12,10 @@ import {
 } from "./ui/form";
 import { Input } from "./ui/input";
 import { Select, SelectTrigger, SelectContent, SelectItem } from "./ui/select";
+import { useToast } from "../hooks/use-toast";
 
 export default function DealerKYCForm({ onSubmit }) {
+  const {toast} = useToast();
   const form = useForm({
     defaultValues: {
       dealershipName: "",
@@ -77,6 +79,27 @@ export default function DealerKYCForm({ onSubmit }) {
   ]);
 
   const handleSubmit = (data) => {
+    // Validate that no empty values are present
+    const validateFields = (obj) => {
+      for (const [key, value] of Object.entries(obj)) {
+        if (typeof value === "object" && value !== null) {
+          if (!validateFields(value)) return false;
+        } else if (!value) {
+          toast({
+            title: "Validation Error",
+            description: `The field "${key}" cannot be empty.`,
+            variant: "destructive",
+          });
+          return false;
+        }
+      }
+      return true;
+    };
+  
+    if (!validateFields(data)) {
+      return;
+    }
+  
     const formattedData = {
       dealership_name: data.dealershipName,
       dealer_address: data.dealerAddress,
@@ -100,7 +123,7 @@ export default function DealerKYCForm({ onSubmit }) {
         account_name: data.bankDetails.accountName,
       },
     };
-
+  
     onSubmit(formattedData);
     form.reset();
   };
