@@ -1,3 +1,4 @@
+import React from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
@@ -18,7 +19,7 @@ import {
 } from "./ui/select";
 import { Input } from "./ui/input";
 import { useRecoilValue } from "recoil";
-import { accessTokenAtom, Dealer_nameAtom } from "../store/UserAtoms";
+import { Dealer_nameAtom } from "../store/UserAtoms";
 import { useToast } from "../hooks/use-toast";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -39,17 +40,25 @@ export default function RegistrationForm({ onSubmit }) {
       dob: "",
       gender: "",
       family_phone1: "",
+      family_name1: "",
+      family_relation1: "",
       family_phone2: "",
+      family_name2: "",
+      family_relation2: "",
       friend_phone1: "",
+      friend_name1: "",
+      friend_relation1: "",
       friend_phone2: "",
+      friend_name2: "",
+      friend_relation2: "",
       image: "",
+      // aadhaar_card: "", 
       PIN: "",
       key: "",
     },
   });
 
   const handleSubmit = async (data) => {
-    // console.log("Access Token:", accessToken);
     try {
       const formData = new FormData();
       Object.keys(data).forEach((key) => {
@@ -65,9 +74,9 @@ export default function RegistrationForm({ onSubmit }) {
           },
         }
       );
-      
+
       console.log("Registration Response:", response.data.message);
-      
+
       toast({
         title: "Registration Successful",
         description: response.data.message,
@@ -79,12 +88,12 @@ export default function RegistrationForm({ onSubmit }) {
           title: "Registration Failed",
           description: response.data.message,
           variant: "destructive",
-        })
+        });
         return;
       }
-  
+
       // PIN Activation
-      console.log("Response Data : ",response.data);
+      console.log("Response Data : ", response.data);
       try {
         const activationResponse = await axios.post(
           `${baseUrl}/dealer/request-activation/`,
@@ -100,13 +109,13 @@ export default function RegistrationForm({ onSubmit }) {
             },
           }
         );
-  
+
         toast({
           title: "PIN Activation request sent",
           description: activationResponse.data.message,
           variant: "default",
         });
-  
+
         navigate("/dashboard");
       } catch (activationError) {
         console.error("Activation Error:", activationError);
@@ -119,7 +128,7 @@ export default function RegistrationForm({ onSubmit }) {
           variant: "destructive",
         });
       }
-  
+
       form.reset();
     } catch (error) {
       console.error("Registration Error:", error);
@@ -142,7 +151,10 @@ export default function RegistrationForm({ onSubmit }) {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-6"
+          >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/** PIN */}
               <FormField
@@ -325,6 +337,26 @@ export default function RegistrationForm({ onSubmit }) {
                   </FormItem>
                 )}
               />
+
+              {/** Aadhaar Card */}
+              <FormField
+                control={form.control}
+                name="aadhaar_card"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Aadhaar Card</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="file"
+                        accept="application/pdf,image/*"
+                        {...field}
+                        className="border-blue-200 focus:border-blue-400"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
 
             {/** Emergency Contacts */}
@@ -332,30 +364,82 @@ export default function RegistrationForm({ onSubmit }) {
               <h3 className="text-lg font-medium text-gray-900">
                 Emergency Contacts
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                {["family_phone1", "family_phone2", "friend_phone1", "friend_phone2"].map(
-                  (key, index) => (
-                    <FormField
-                      key={key}
-                      control={form.control}
-                      name={key}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>
-                            {`Emergency Contact ${index + 1}`}
-                          </FormLabel>
-                          <FormControl>
-                            <Input
-                              {...field}
-                              placeholder={`Enter contact ${index + 1}`}
-                              className="border-blue-200 focus:border-blue-400"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  )
+              <div className="flex flex-wrap gap-2 mt-4">
+                {["family", "friend"].map((type) =>
+                  [1, 2].map((index) => (
+                    <React.Fragment key={`${type}_phone${index}`}>
+                      <div className="flex flex-col w-full">
+                        <div className="flex flex-wrap gap-4">
+                          <div className="flex flex-row w-full gap-4">
+                            <div className="flex flex-col w-full md:w-1/3">
+                              <FormField
+                                control={form.control}
+                                name={`${type}_name${index}`}
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>{`Emergency Contact ${index} Name`}</FormLabel>
+                                    <FormControl>
+                                      <Input
+                                        {...field}
+                                        placeholder={`Enter contact ${index} name`}
+                                        className="border-blue-200 focus:border-blue-400"
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </div>
+
+                            <div className="flex flex-col w-full md:w-1/3">
+                              <FormField
+                                control={form.control}
+                                name={`${type}_phone${index}`}
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>{`Emergency Contact ${index} Phone`}</FormLabel>
+                                    <FormControl>
+                                      <Input
+                                        {...field}
+                                        placeholder={`Enter contact ${index} phone`}
+                                        className="border-blue-200 focus:border-blue-400"
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </div>
+                            <div className="flex flex-col w-full md:w-1/3">
+                              <FormField
+                                control={form.control}
+                                name={`${type}_relation${index}`}
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>{`You are ${
+                                      form.watch("gender") === "Male"
+                                        ? "his"
+                                        : "her"
+                                    } ${
+                                      type === "family" ? "family" : "friend"
+                                    } relation`}</FormLabel>
+                                    <FormControl>
+                                      <Input
+                                        {...field}
+                                        placeholder={`Enter relation`}
+                                        className="border-blue-200 focus:border-blue-400"
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </React.Fragment>
+                  ))
                 )}
               </div>
             </div>

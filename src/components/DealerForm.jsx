@@ -15,7 +15,7 @@ import { Select, SelectTrigger, SelectContent, SelectItem } from "./ui/select";
 import { useToast } from "../hooks/use-toast";
 
 export default function DealerKYCForm({ onSubmit }) {
-  const {toast} = useToast();
+  const { toast } = useToast();
   const form = useForm({
     defaultValues: {
       dealershipName: "",
@@ -39,6 +39,7 @@ export default function DealerKYCForm({ onSubmit }) {
         accountNumber: "",
         accountName: "",
       },
+      // businessDocuments: null,
     },
   });
 
@@ -95,11 +96,11 @@ export default function DealerKYCForm({ onSubmit }) {
       }
       return true;
     };
-  
+
     if (!validateFields(data)) {
       return;
     }
-  
+
     const formattedData = {
       dealership_name: data.dealershipName,
       dealer_address: data.dealerAddress,
@@ -123,7 +124,7 @@ export default function DealerKYCForm({ onSubmit }) {
         account_name: data.bankDetails.accountName,
       },
     };
-  
+
     onSubmit(formattedData);
     form.reset();
   };
