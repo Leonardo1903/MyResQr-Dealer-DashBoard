@@ -25,11 +25,11 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 export default function RegistrationForm({ onSubmit }) {
+  const { toast } = useToast();
   const accessToken = sessionStorage.getItem("accessToken");
   const dealerName = useRecoilValue(Dealer_nameAtom);
   const navigate = useNavigate();
   const baseUrl = "http://3.108.8.215/api/v1";
-  const { toast } = useToast();
   const form = useForm({
     defaultValues: {
       affilatedTo: dealerName,
@@ -52,7 +52,8 @@ export default function RegistrationForm({ onSubmit }) {
       friend_name2: "",
       friend_relation2: "",
       image: "",
-      // aadhaar_card: "", 
+      adhaar_front: "",
+      adhaar_back: "",
       PIN: "",
       key: "",
     },
@@ -341,10 +342,29 @@ export default function RegistrationForm({ onSubmit }) {
               {/** Aadhaar Card */}
               <FormField
                 control={form.control}
-                name="aadhaar_card"
+                name="adhaar_front"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Aadhaar Card</FormLabel>
+                    <FormLabel>Aadhaar Card Front</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="file"
+                        accept="application/pdf,image/*"
+                        {...field}
+                        className="border-blue-200 focus:border-blue-400"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="adhaar_back"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Aadhaar Card Back</FormLabel>
                     <FormControl>
                       <Input
                         type="file"
@@ -416,20 +436,34 @@ export default function RegistrationForm({ onSubmit }) {
                                 name={`${type}_relation${index}`}
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel>{`You are ${
-                                      form.watch("gender") === "Male"
-                                        ? "his"
-                                        : "her"
-                                    } ${
-                                      type === "family" ? "family" : "friend"
-                                    } relation`}</FormLabel>
-                                    <FormControl>
-                                      <Input
-                                        {...field}
-                                        placeholder={`Enter relation`}
-                                        className="border-blue-200 focus:border-blue-400"
-                                      />
-                                    </FormControl>
+                                    <FormLabel>{`Relation`}</FormLabel>
+                                    <Select
+                                      onValueChange={field.onChange}
+                                      defaultValue={field.value}
+                                    >
+                                      <FormControl>
+                                        <SelectTrigger className="border-blue-200 focus:border-blue-400">
+                                          <SelectValue placeholder="Select relation" />
+                                        </SelectTrigger>
+                                      </FormControl>
+                                      <SelectContent>
+                                        <SelectItem value="Father">
+                                          Father
+                                        </SelectItem>
+                                        <SelectItem value="Mother">
+                                          Mother
+                                        </SelectItem>
+                                        <SelectItem value="Sibling">
+                                          Sibling
+                                        </SelectItem>
+                                        <SelectItem value="Friend">
+                                          Friend
+                                        </SelectItem>
+                                        <SelectItem value="Other">
+                                          Other
+                                        </SelectItem>
+                                      </SelectContent>
+                                    </Select>
                                     <FormMessage />
                                   </FormItem>
                                 )}
