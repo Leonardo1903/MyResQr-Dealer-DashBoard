@@ -56,6 +56,7 @@ export default function RegistrationForm({ onSubmit }) {
       adhaar_back: "",
       PIN: "",
       key: "",
+      nomine: "",
     },
   });
 
@@ -477,6 +478,46 @@ export default function RegistrationForm({ onSubmit }) {
                 )}
               </div>
             </div>
+
+            <div className="mt-6">
+              <h3 className="text-lg font-medium text-gray-900">Nominee</h3>
+              <FormField
+                control={form.control}
+                name="nomine"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Select Nominee</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="border-blue-200 focus:border-blue-400">
+                          <SelectValue placeholder="Choose nominee" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {["family", "friend"].map((type) =>
+                          [1, 2].map((index) => {
+                            const nomineeName = form.getValues(`${type}_name${index}`);
+                            return nomineeName ? (
+                              <SelectItem
+                                key={`${type}_name${index}`}
+                                value={nomineeName}
+                              >
+                                {nomineeName}
+                              </SelectItem>
+                            ) : null;
+                          })
+                        )}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
 
             <Button
               type="submit"
