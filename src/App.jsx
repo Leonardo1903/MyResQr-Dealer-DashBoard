@@ -21,12 +21,12 @@ function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
+        <Route path="" element={<LoginPage />} />
+        <Route path="/new-user" element={<RegistrationForm />} />
+        <Route path="/dealer-regn" element={<DealerKYC />} />
         <Route path="/" element={<Layout />}>
-          <Route path="" element={<LoginPage />} />
           <Route path="/view-policy" element={<Dashboard />} />
           <Route path="/dashboard" element={<Home />} />
-          <Route path="/new-vehicle" element={<RegistrationForm />} />
-          <Route path="/dealer-kyc" element={<DealerKYC />} />
         </Route>
       </>
     )
@@ -35,10 +35,10 @@ function App() {
   return (
     <div className="max-w-screen">
       <RecoilRoot>
-      {/* <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme"> */}
-      <RouterProvider router={router} />
-      <Toaster />
-      {/* </ThemeProvider> */}
+        {/* <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme"> */}
+        <RouterProvider router={router} />
+        <Toaster />
+        {/* </ThemeProvider> */}
       </RecoilRoot>
     </div>
   );
