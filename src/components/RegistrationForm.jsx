@@ -22,7 +22,7 @@ import { useRecoilValue } from "recoil";
 import { Dealer_nameAtom } from "../store/UserAtoms";
 import { useToast } from "../hooks/use-toast";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 export default function RegistrationForm({ onSubmit }) {
   const { toast } = useToast();
@@ -499,7 +499,9 @@ export default function RegistrationForm({ onSubmit }) {
                       <SelectContent>
                         {["family", "friend"].map((type) =>
                           [1, 2].map((index) => {
-                            const nomineeName = form.getValues(`${type}_name${index}`);
+                            const nomineeName = form.getValues(
+                              `${type}_name${index}`
+                            );
                             return nomineeName ? (
                               <SelectItem
                                 key={`${type}_name${index}`}
@@ -518,7 +520,6 @@ export default function RegistrationForm({ onSubmit }) {
               />
             </div>
 
-
             <Button
               type="submit"
               className="w-full bg-blue-600 hover:bg-blue-700 mt-6"
@@ -526,6 +527,7 @@ export default function RegistrationForm({ onSubmit }) {
               Submit
             </Button>
           </form>
+          
         </Form>
       </CardContent>
     </Card>
